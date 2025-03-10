@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - TruchaShop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/btn.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <div class="logo">
+                <i class="fas fa-fish"></i> TruchaShop
+            </div>
+            <ul class="admin-menu">
+                <li class="active"><a href="#"><i class="fas fa-box"></i> Productos</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Ventas</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="/"><i class="fas fa-home"></i> Volver al sitio</a></li>
+            </ul>
+        </div>
+        
+        <div class="admin-content">
+            <header class="admin-header">
+                <h1>Panel de Administración</h1>
+                <div class="admin-user">
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+            
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>Gestión de Productos</h2>
+                    <button class="btn-add" id="btnAgregarProducto"><i class="fas fa-plus"></i> Agregar Producto</button>
+
+                    <!-- Añadir estos botones en el div.card-header junto al botón Agregar Producto -->
+                    <div class="card-header">
+                        <h2>Gestión de Productos</h2>
+                        <div class="action-buttons">
+                            <button class="btn-pdf" id="btnGenerarPDF">
+                                <i class="fas fa-file-pdf"></i> Generar PDF con IVA
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <script>
+                    document.getElementById("btnGenerarPDF").addEventListener("click", function() {
+                        window.open("/productos/pdf-con-iva", "_blank");
+                    });
+                </script>
+                
+                
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Peso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (productos && productos.length > 0) { %>
+                                    <% productos.forEach(producto => { %>
+                                        <tr>
+                                            <td><%= producto.id %></td>
+                                            <td>
+                                                <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="producto-miniatura">
+                                            </td>
+                                            <td><%= producto.nombre %></td>
+                                            <td>$<%= producto.precio.toLocaleString('es-CO') %></td>
+                                            <td><%= producto.peso %> g</td>
+                                            <td class="acciones">
+                                                <button class="btn-editar" data-id="<%= producto.id %>" 
+                                                    data-nombre="<%= producto.nombre %>" 
+                                                    data-precio="<%= producto.precio %>" 
+                                                    data-peso="<%= producto.peso %>" 
+                                                    data-imagen="<%= producto.imagen %>">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-eliminar" data-id="<%= producto.id %>">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center">No hay productos disponibles</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Modal Agregar Producto -->
+    <div class="modal" id="modalAgregarProducto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nuevo Producto</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="formAgregarProducto" action="/productos" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Producto</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="precio">Precio (COP)</label>
+                    <input type="number" id="precio" name="precio" min="0" step="1000" required>
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso (g)</label>
+                    <input type="text" id="peso" name="peso" required>
+                </div>
+                <div class="form-group">
+                    <label for="imagen">URL de la Imagen</label>
+                    <input type="text" id="imagen" name="imagen" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">Guardar</button>
+                    <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Producto -->
+    <div class="modal" id="modalEditarProducto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Producto</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="formEditarProducto" action="/productos/editar/" method="POST">
+                <input type="hidden" id="editId" name="id">
+                <div class="form-group">
+                    <label for="editNombre">Nombre del Producto</label>
+                    <input type="text" id="editNombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPrecio">Precio (COP)</label>
+                    <input type="number" id="editPrecio" name="precio" min="0" step="1000" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPeso">Peso (g)</label>
+                    <input type="text" id="editPeso" name="peso" required>
+                </div>
+                <div class="form-group">
+                    <label for="editImagen">URL de la Imagen</label>
+                    <input type="text" id="editImagen" name="imagen" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">Actualizar</button>
+                    <button type="button" class="btn-cancelar" id="btnCancelarEditar">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Confirmar Eliminación -->
+    <div class="modal" id="modalConfirmarEliminar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Eliminación</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro que desea eliminar este producto? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="form-actions">
+                <form id="formEliminarProducto" action="/productos/eliminar/" method="POST">
+                    <input type="hidden" id="deleteId" name="id">
+                    <button type="submit" class="btn-eliminar-confirmar">Eliminar</button>
+                    <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>
