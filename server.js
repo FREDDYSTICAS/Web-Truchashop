@@ -24,13 +24,11 @@ app.set("views", path.join(__dirname, "views"));
 // 🔹 Panel de administración
 app.get("/panel", async (req, res) => {
   res.render("panel");
-  res.json({ codigo: 200, mensaje: "Vista del panel de administración" });
 });
 
 // 🔹 Página principal - Listar productos
 app.get("/", async (req, res) => {
   res.render("index");
-  res.json({ codigo: 200, mensaje: "Página principal con productos" });
 });
 
 // 🔹 Agregar producto
@@ -60,7 +58,7 @@ app.post("/api/aplicar-iva", async (req, res) => {
 // 🔹 Generar PDF con precios + IVA (usa Mongo en el futuro)
 app.get("/productos/pdf-con-iva", async (req, res) => {
   // TODO: Traer productos de MongoDB e imprimir PDF
-  res.json({ codigo: 200, mensaje: "Generación de PDF aquí" });
+  res.send("Generación de PDF aquí");
 });
 
 // 🟢 Iniciar el servidor
