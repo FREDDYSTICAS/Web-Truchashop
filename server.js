@@ -23,44 +23,44 @@ app.set("views", path.join(__dirname, "views"));
 
 // 🔹 Panel de administración
 app.get("/panel", async (req, res) => {
-  // TODO: Reemplazar esto con modelo Mongo
-  res.send("Vista del panel de administración");
+  res.render("panel");
+  res.json({ codigo: 200, mensaje: "Vista del panel de administración" });
 });
 
 // 🔹 Página principal - Listar productos
 app.get("/", async (req, res) => {
-  // TODO: Reemplazar esto con modelo Mongo
-  res.send("Página principal con productos");
+  res.render("index");
+  res.json({ codigo: 200, mensaje: "Página principal con productos" });
 });
 
 // 🔹 Agregar producto
 app.post("/productos", async (req, res) => {
   // TODO: Guardar producto en MongoDB
-  res.send("Producto agregado");
+  res.json({ codigo: 201, mensaje: "Producto agregado", data: req.body });
 });
 
 // 🔹 Actualizar producto
 app.post("/productos/editar/:id", async (req, res) => {
   // TODO: Actualizar producto en MongoDB
-  res.send("Producto actualizado");
+  res.json({ codigo: 200, mensaje: "Producto actualizado", id: req.params.id });
 });
 
 // 🔹 Eliminar producto
 app.post("/productos/eliminar/:id", async (req, res) => {
   // TODO: Eliminar producto de MongoDB
-  res.send("Producto eliminado");
+  res.json({ codigo: 200, mensaje: "Producto eliminado", id: req.params.id });
 });
 
 // 🔹 Aplicar IVA (esto puede ser reemplazado por lógica JS en Mongo)
 app.post("/api/aplicar-iva", async (req, res) => {
   // TODO: Aplicar IVA a los productos (si se quiere calcular en backend)
-  res.send("IVA aplicado (ficticio)");
+  res.json({ codigo: 200, mensaje: "IVA aplicado (ficticio)" });
 });
 
 // 🔹 Generar PDF con precios + IVA (usa Mongo en el futuro)
 app.get("/productos/pdf-con-iva", async (req, res) => {
   // TODO: Traer productos de MongoDB e imprimir PDF
-  res.send("Generación de PDF aquí");
+  res.json({ codigo: 200, mensaje: "Generación de PDF aquí" });
 });
 
 // 🟢 Iniciar el servidor
