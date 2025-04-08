@@ -206,6 +206,89 @@
         </div>
     </section>
 
+  <!-- Registration Section -->
+<section class="registration-section">
+    <div class="container">
+        <h2 class="section-title">Regístrate como Cliente</h2>
+        <p class="section-description">Únete a nuestra comunidad y disfruta de beneficios exclusivos</p>
+        
+        <div class="registration-container">
+            <div class="registration-header">
+                <i class="fas fa-user-plus"></i>
+                <h3>Datos Personales</h3>
+            </div>
+            
+            <form id="clientRegistrationForm" class="registration-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipoDocumento">
+                            <i class="fas fa-id-card"></i> Tipo de Documento
+                        </label>
+                        <select id="tipoDocumento" name="tipoDocumento" required>
+                            <option value="">Seleccionar</option>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="TI">Tarjeta de Identidad</option>
+                            <option value="PP">Pasaporte</option>
+                            <option value="NIT">NIT</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="numeroDocumento">
+                            <i class="fas fa-fingerprint"></i> Número de Documento
+                        </label>
+                        <input type="text" id="numeroDocumento" name="numeroDocumento" placeholder="Ingrese su número de documento" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="nombreCompleto">
+                            <i class="fas fa-user"></i> Nombre Completo
+                        </label>
+                        <input type="text" id="nombreCompleto" name="nombreCompleto" placeholder="Ingrese su nombre completo" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numeroContacto">
+                            <i class="fas fa-phone"></i> Número de Contacto
+                        </label>
+                        <input type="tel" id="numeroContacto" name="numeroContacto" placeholder="Ej: 3001234567" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="correoElectronico">
+                            <i class="fas fa-envelope"></i> Correo Electrónico
+                        </label>
+                        <input type="email" id="correoElectronico" name="correoElectronico" placeholder="ejemplo@correo.com" required>
+                    </div>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="terminos" name="terminos" required>
+                    <label for="terminos">
+                        Acepto los <a href="#" class="terms-link">términos y condiciones</a> y la <a href="#" class="terms-link">política de privacidad</a>
+                    </label>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">
+                        Deseo recibir ofertas especiales y noticias sobre TruchaShop
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 <!-- Footer -->
 <footer>
     <div class="container">
