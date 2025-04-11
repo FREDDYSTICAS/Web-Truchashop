@@ -13,6 +13,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Estilos adicionales para la columna Cantidad */
+        .admin-table th:nth-child(6),
+        .admin-table td:nth-child(6) {
+            width: 100px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-container">
@@ -22,8 +30,9 @@
             </div>
             <ul class="admin-menu">
                 <li class="active"><a href="#"><i class="fas fa-box"></i> Productos</a></li>
-                <li><a href="#"><i class="fas fa-chart-line"></i> Ventas</a></li>
-                <li><a href="#"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="/ventas"><i class="fas fa-chart-line"></i> Ventas</a></li>
+                <li><a href="/pedidos"><i class="fas fa-clipboard-list"></i> Pedidos</a></li>
+                <li><a href="/panel-clientes"><i class="fas fa-users"></i> Clientes</a></li>
                 <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
                 <li><a href="/"><i class="fas fa-home"></i> Volver al sitio</a></li>
             </ul>
@@ -41,26 +50,11 @@
             <div class="admin-card">
                 <div class="card-header">
                     <h2>Gestión de Productos</h2>
-                    <button class="btn-add" id="btnAgregarProducto"><i class="fas fa-plus"></i> Agregar Producto</button>
-
-                    <!-- Añadir estos botones en el div.card-header junto al botón Agregar Producto -->
-                    <div class="card-header">
-                        <h2>Gestión de Productos</h2>
-                        <div class="action-buttons">
-                            <button class="btn-pdf" id="btnGenerarPDF">
-                                <i class="fas fa-file-pdf"></i> Generar PDF con IVA
-                            </button>
-                        </div>
+                    <div class="action-buttons">
+                        <button class="btn-add" id="btnAgregarProducto"><i class="fas fa-plus"></i> Agregar Producto</button>
+                        <button class="btn-pdf" id="btnGenerarPDF"><i class="fas fa-file-pdf"></i> Generar PDF con IVA</button>
                     </div>
-                    
                 </div>
-                
-                <script>
-                    document.getElementById("btnGenerarPDF").addEventListener("click", function() {
-                        window.open("/productos/pdf-con-iva", "_blank");
-                    });
-                </script>
-                
                 
                 <div class="card-body">
                     <div class="table-responsive">
@@ -72,6 +66,7 @@
                                     <th>Nombre</th>
                                     <th>Precio</th>
                                     <th>Peso</th>
+                                    <th>Cantidad</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -86,13 +81,16 @@
                                             <td><%= producto.nombre %></td>
                                             <td>$<%= producto.precio.toLocaleString('es-CO') %></td>
                                             <td><%= producto.peso %> g</td>
+                                            <td><%= producto.stock %></td>
                                             <td class="acciones">
-                                                <button class="btn-editar" data-id="<%= producto.id %>" 
+                                                <button class="btn-editar" 
+                                                    data-id="<%= producto.id %>" 
                                                     data-nombre="<%= producto.nombre %>" 
                                                     data-precio="<%= producto.precio %>" 
                                                     data-peso="<%= producto.peso %>" 
-                                                    data-imagen="<%= producto.imagen %>">
-                                                    <i class="fas fa-edit"></i>
+                                                    data-imagen="<%= producto.imagen %>" 
+                                                    data-stock="<%= producto.stock %>">
+                                                    <i class="fas fa-edit"></i> Editar
                                                 </button>
                                                 <button class="btn-eliminar" data-id="<%= producto.id %>">
                                                     <i class="fas fa-trash"></i>
@@ -102,7 +100,7 @@
                                     <% }); %>
                                 <% } else { %>
                                     <tr>
-                                        <td colspan="6" class="text-center">No hay productos disponibles</td>
+                                        <td colspan="7" class="text-center">No hay productos disponibles</td>
                                     </tr>
                                 <% } %>
                             </tbody>
@@ -113,7 +111,6 @@
         </div>
     </div>
     
-
     <!-- Modal Agregar Producto -->
     <div class="modal" id="modalAgregarProducto">
         <div class="modal-content">
@@ -121,7 +118,7 @@
                 <h3>Agregar Nuevo Producto</h3>
                 <span class="close-modal">&times;</span>
             </div>
-            <form id="formAgregarProducto" action="/productos" method="POST">
+            <form id="formAgregarProducto" action="/productos/agregar" method="POST">
                 <div class="form-group">
                     <label for="nombre">Nombre del Producto</label>
                     <input type="text" id="nombre" name="nombre" required>
@@ -133,6 +130,10 @@
                 <div class="form-group">
                     <label for="peso">Peso (g)</label>
                     <input type="text" id="peso" name="peso" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Cantidad (Unidades)</label>
+                    <input type="number" id="stock" name="stock" min="0" required>
                 </div>
                 <div class="form-group">
                     <label for="imagen">URL de la Imagen</label>
@@ -168,6 +169,10 @@
                     <input type="text" id="editPeso" name="peso" required>
                 </div>
                 <div class="form-group">
+                    <label for="editstock">Cantidad (Unidades)</label>
+                    <input type="number" id="editstock" name="stock" min="0" required>
+                </div>
+                <div class="form-group">
                     <label for="editImagen">URL de la Imagen</label>
                     <input type="text" id="editImagen" name="imagen" required>
                 </div>
@@ -200,5 +205,11 @@
     </div>
 
     <script src="/js/admin.js"></script>
+    <script>
+        // Script para abrir el PDF en una nueva pestaña
+        document.getElementById("btnGenerarPDF").addEventListener("click", function() {
+            window.open("/productos/pdf-con-iva", "_blank");
+        });
+    </script>
 </body>
 </html>

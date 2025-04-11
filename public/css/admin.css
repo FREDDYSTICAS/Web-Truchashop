@@ -394,3 +394,16 @@ a {
         justify-content: center;
     }
 }
+/* ccs para colu,mna stocks */
+/* Estilos para la columna Cantidad */
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) {
+    width: 100px;
+    text-align: center;
+}
+
+/* Ajustes para los botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}

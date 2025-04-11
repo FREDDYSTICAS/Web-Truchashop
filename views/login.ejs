@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #3498db, #2c3e50);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #2c3e50;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1a252f;
+    }
+
+    .error {
+      color: #e74c3c;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .user-icon {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .user-icon div {
+      display: inline-block;
+      background-color: #2c3e50;
+      color: white;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      font-size: 36px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="user-icon">
+      <div>👤</div>
+    </div>
+    <h1>Admin Login</h1>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <form action="/auth/login" method="POST">
+      <div class="form-group">
+        <label for="correo">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="correo" 
+          name="correo" 
+          value="<%= typeof correo !== 'undefined' ? correo : '' %>" 
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input type="password" id="contraseña" name="contraseña" required>
+      </div>
+
+      <button type="submit">Iniciar Sesión</button>
+    </form>
+  </div>
+</body>
+</html>
