@@ -29,7 +29,7 @@ app.use(session({
     sameSite: 'strict',
     maxAge: 24 * 60 * 60 * 1000
   },
-  store: process.env.NODE_ENV === 'production' ? new (require('connect-mongo')(session))({
+  store: process.env.NODE_ENV === 'production' ? new (require('connect-mongo')).default(session)({
     mongooseConnection: mongoose.connection,
     ttl: 24 * 60 * 60 // 1 día
   }) : null
