@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Configuración avanzada de sesión
+// Configuración de sesión (sin MongoStore)
 app.use(session({
   secret: process.env.SESSION_SECRET || 'tu_super_secreto_seguro_' + Math.random().toString(36).substring(2),
   resave: false,
@@ -27,12 +27,8 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'strict',
-    maxAge: 24 * 60 * 60 * 1000
-  },
-  store: process.env.NODE_ENV === 'production' ? new (require('connect-mongo')).default(session)({
-    mongooseConnection: mongoose.connection,
-    ttl: 24 * 60 * 60 // 1 día
-  }) : null
+    maxAge: 24 * 60 * 60 * 1000 // 1 día
+  }
 }));
 
 // Flash messages para feedback al usuario
