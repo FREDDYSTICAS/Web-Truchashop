@@ -235,3 +235,21 @@ exports.eliminarPedido = async (req, res) => {
     });
   }
 };
+
+// Agrega esta función al final de tu controlador
+exports.obtenerPedidoParaPDF = async (pedidoId) => {
+  try {
+      const pedido = await Pedido.findById(pedidoId)
+          .populate('cliente')
+          .populate('productos.producto');
+      
+      if (!pedido) {
+          throw new Error('Pedido no encontrado');
+      }
+      
+      return pedido;
+  } catch (error) {
+      console.error('Error al obtener pedido para PDF:', error);
+      throw error;
+  }
+};

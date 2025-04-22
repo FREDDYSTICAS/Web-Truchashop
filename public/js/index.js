@@ -435,8 +435,10 @@ if (checkoutBtn) {
                                 localStorage.setItem("nombrePendiente", datosEnvio.nombre);
                                 
                                 // Redirigir a la página de registro
-                                window.location.href = "/registro.html";
+                                window.location.href = "/#registro"; // No necesitas poner .ejs
+
                             });
+
                         } else {
                             // Si ya está registrado o no quiere registrarse
                             Swal.fire({

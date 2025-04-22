@@ -51,7 +51,6 @@
                             <li><a href="#">Filetes de Trucha</a></li>
                             <li><a href="#">Truchas Ahumadas</a></li>
                             <li><a href="#">Truchas Marinadas</a></li>
-                            <li><a href="#">Promociones</a></li>
                         </ul>
                     </li>
 
@@ -75,9 +74,8 @@
                             <li><a href="#">Enviar tu Receta</a></li>
                         </ul>
                     </li>
-
                     <li><a href="#">Blog</a></li>
-                    <li><a href="#">Contacto</a></li>
+                    <li><a href="#Contacto">Contacto</a></li>
                     <li><a href="/panel">Administrador</a></li>
                     
                 </ul>
@@ -104,12 +102,12 @@
             <p>Ofrecemos las mejores truchas de la región, criadas en aguas cristalinas
             y con los más altos estándares de calidad para garantizar 
             el mejor sabor en su mesa.</p>
-            <a href="#" class="btn1">Ver Productos</a>
+            <a href="#miSeccion" class="btn1">Ver Productos</a>
         </div>
     </section>
 
     <!-- manejo de productos directamente desde el server conla base -->
-    <section class="container">
+    <section id="miSeccion" class="container">
         <h2 class="section-title">Nuestros Productos</h2>
         <div class="products">
           <% productos.forEach(producto => { %>
@@ -265,7 +263,7 @@
             <div class="footer-column">
                 <h3>TruchaShop</h3>
                 <p>Ofreciendo las mejores truchas desde 2010.</p>
-                <div class="social-links">
+                <div id="Contacto" class="social-links">
                     <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
                     <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
@@ -276,9 +274,9 @@
                 <h3>Enlaces Rápidos</h3>
                 <ul>
                     <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Productos</a></li>
+                    <li><a href="#miSeccion">Productos</a></li>
                     <li><a href="#">Sobre Nosotros</a></li>
-                    <li><a href="#">Contacto</a></li>
+                    <li><a href="#Contacto">Contacto</a></li>
                 </ul>
             </div>
 
@@ -327,6 +325,5 @@
             this.appendChild(inputCarrito);
         });
         </script>
-        
 </body>
 </html>

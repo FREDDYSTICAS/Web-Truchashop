@@ -4,23 +4,27 @@ document.addEventListener('DOMContentLoaded', function() {
         modals: {
             agregar: document.getElementById('modalAgregarProducto'),
             editar: document.getElementById('modalEditarProducto'),
-            eliminar: document.getElementById('modalConfirmarEliminar')
+            eliminar: document.getElementById('modalConfirmarEliminar'),
+            agregarUnidades: document.getElementById('modalAgregarUnidades')
         },
         forms: {
             agregar: document.getElementById('formAgregarProducto'),
             editar: document.getElementById('formEditarProducto'),
-            eliminar: document.getElementById('formEliminarProducto')
+            eliminar: document.getElementById('formEliminarProducto'),
+            agregarUnidades: document.getElementById('formAgregarUnidades')
         },
         buttons: {
             agregar: document.getElementById('btnAgregarProducto'),
             cancelar: {
                 agregar: document.getElementById('btnCancelarAgregar'),
                 editar: document.getElementById('btnCancelarEditar'),
-                eliminar: document.getElementById('btnCancelarEliminar')
+                eliminar: document.getElementById('btnCancelarEliminar'),
+                unidades: document.getElementById('btnCancelarUnidades')
             },
             acciones: {
                 editar: document.querySelectorAll('.btn-editar'),
                 eliminar: document.querySelectorAll('.btn-eliminar'),
+                agregarUnidades: document.querySelectorAll('.btn-agregar-unidades'),
                 aplicarIVA: document.getElementById('btnAplicarIVA'),
                 generarPDF: document.getElementById('btnGenerarPDF')
             }
@@ -39,8 +43,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Funciones auxiliares
     function validateElements(elements) {
-        return elements.modals.agregar && elements.modals.editar && elements.modals.eliminar &&
-               elements.forms.agregar && elements.forms.editar && elements.forms.eliminar &&
+        return elements.modals.agregar && 
+               elements.modals.editar && 
+               elements.modals.eliminar &&
+               elements.modals.agregarUnidades &&
+               elements.forms.agregar && 
+               elements.forms.editar && 
+               elements.forms.eliminar &&
+               elements.forms.agregarUnidades &&
                elements.buttons.agregar;
     }
 
@@ -55,9 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Cerrar al hacer clic fuera
         window.addEventListener('click', (event) => {
-            if (event.target === elements.modals.agregar) elements.modals.agregar.style.display = 'none';
-            if (event.target === elements.modals.editar) elements.modals.editar.style.display = 'none';
-            if (event.target === elements.modals.eliminar) elements.modals.eliminar.style.display = 'none';
+            if (event.target === elements.modals.agregar) closeModal(elements.modals.agregar);
+            if (event.target === elements.modals.editar) closeModal(elements.modals.editar);
+            if (event.target === elements.modals.eliminar) closeModal(elements.modals.eliminar);
+            if (event.target === elements.modals.agregarUnidades) closeModal(elements.modals.agregarUnidades);
         });
         
         // Botones cancelar
@@ -68,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         elements.buttons.cancelar.editar.addEventListener('click', () => closeModal(elements.modals.editar));
         elements.buttons.cancelar.eliminar.addEventListener('click', () => closeModal(elements.modals.eliminar));
+        elements.buttons.cancelar.unidades.addEventListener('click', () => closeModal(elements.modals.agregarUnidades));
         
         // Botones editar
         elements.buttons.acciones.editar.forEach(btn => {
@@ -88,11 +100,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 showModal(elements.modals.eliminar);
             });
         });
+
+        // Botones agregar unidades
+        elements.buttons.acciones.agregarUnidades.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const stock = btn.getAttribute('data-stock');
+                document.getElementById('unidadesId').value = id;
+                document.getElementById('stockActual').textContent = stock;
+                elements.forms.agregarUnidades.action = `/productos/agregar-unidades/${id}`;
+                showModal(elements.modals.agregarUnidades);
+            });
+        });
         
         // Formularios
         elements.forms.agregar.addEventListener('submit', (e) => handleFormSubmit(e, elements.forms.agregar, 'agregado'));
         elements.forms.editar.addEventListener('submit', (e) => handleFormSubmit(e, elements.forms.editar, 'actualizado'));
         elements.forms.eliminar.addEventListener('submit', (e) => handleFormSubmit(e, elements.forms.eliminar, 'eliminado'));
+        elements.forms.agregarUnidades.addEventListener('submit', (e) => handleFormSubmit(e, elements.forms.agregarUnidades, 'actualizado (stock)'));
         
         // Botones adicionales
         if (elements.buttons.acciones.aplicarIVA) {
@@ -134,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const method = 'POST';
             let body;
             
-            if (action === 'eliminado') {
+            if (action.includes('eliminado')) {
                 body = new URLSearchParams(new FormData(form));
             } else {
                 const formData = new FormData(form);
@@ -147,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const response = await fetch(url, {
                 method,
-                headers: action === 'eliminado' ? {} : { 'Content-Type': 'application/json' },
+                headers: action.includes('eliminado') ? {} : { 'Content-Type': 'application/json' },
                 body
             });
             

@@ -8,8 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="/css/admin.css">
-    <link rel="stylesheet" href="/css/admin.css">
-    <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/pedidos.css">
 </head>
 <body>
@@ -50,6 +48,9 @@
                     <div class="action-buttons">
                         <button class="btn-refresh" id="btnRefrescar">
                             <i class="fas fa-sync-alt"></i> Actualizar
+                        </button>
+                        <button class="btn-pdf-all" id="btnGenerarInforme">
+                            <i class="fas fa-file-pdf"></i> Informe General
                         </button>
                     </div>
                 </div>
@@ -108,8 +109,10 @@
                                                         data-pedido='<%- JSON.stringify(pedido) %>'>
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button class="btn-eliminar" 
-                                                data-id="<%= pedido.id %>">
+                                                <button class="btn-pdf" data-id="<%= pedido.id %>" data-pedido='<%- JSON.stringify(pedido) %>'>
+                                                    <i class="fas fa-file-pdf"></i> PDF
+                                                </button>
+                                                <button class="btn-eliminar" data-id="<%= pedido.id %>">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>       
                                             </td>
@@ -128,16 +131,11 @@
         </div>
     </div>
 
-    <!-- Modal Detalles Pedido -->
-    <div class="modal" id="modalDetalles">
+    <!-- Modal para detalles del pedido -->
+    <div id="modalDetalles" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detalles del Pedido</h3>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body" id="detallesPedido">
-                <!-- Contenido dinámico -->
-            </div>
+            <span class="close-modal">&times;</span>
+            <div id="detallesPedido"></div>
         </div>
     </div>
 

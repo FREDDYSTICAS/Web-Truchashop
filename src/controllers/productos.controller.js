@@ -188,7 +188,7 @@ exports.generarPDFConIVA = async (req, res) => {
     doc.moveDown();
     doc.fontSize(9)
        .fillColor('#666666')
-       .text('Nota: Los precios incluyen un IVA del 21%', { align: 'center' });
+       .text('Nota: Los precios incluyen un IVA del 19%', { align: 'center' });
 
     // Añadir número de página
     const totalPages = doc.bufferedPageRange().count;
@@ -218,5 +218,26 @@ exports.generarPDFConIVA = async (req, res) => {
   } catch (error) {
     console.error('Error al generar PDF:', error);
     res.status(500).send("Error al generar el PDF");
+  }
+};
+// En productosController.js
+exports.agregarUnidades = async (req, res) => {
+  try {
+    const { cantidad } = req.body;
+    const producto = await Producto.findById(req.params.id);
+    
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+    
+    producto.stock += parseInt(cantidad);
+    await producto.save();
+    
+    res.status(200).json({ mensaje: `Se agregaron ${cantidad} unidades al stock` });
+  } catch (error) {
+    res.status(500).json({ 
+      mensaje: "Error al actualizar unidades",
+      error: error.message 
+    });
   }
 };
