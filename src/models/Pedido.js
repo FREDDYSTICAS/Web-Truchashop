@@ -52,4 +52,9 @@ const PedidoSchema = new mongoose.Schema({
   }
 });
 
+// Método para calcular el total con IVA
+PedidoSchema.methods.getTotalConIVA = function() {
+  return this.total * 1.19; // IVA del 19%
+};
+
 module.exports = mongoose.model('Pedido', PedidoSchema);
