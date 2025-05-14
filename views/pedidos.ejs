@@ -1,0 +1,146 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Pedidos - TruchaShop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/pedidos.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Menú Hamburguesa -->
+        <div class="burger-menu">
+            <i class="fas fa-bars" id="burgerIcon"></i>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-fish"></i> TruchaShop
+            </div>
+            <ul class="admin-menu">
+                <li><a href="/panel"><i class="fas fa-box"></i> Productos</a></li>
+                <li><a href="/ventas"><i class="fas fa-chart-line"></i> Ventas</a></li>
+                <li class="active"><a href="/pedidos"><i class="fas fa-clipboard-list"></i> Pedidos</a></li>
+                <li><a href="/panel-clientes"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="/"><i class="fas fa-home"></i> Volver al sitio</a></li>
+            </ul>
+        </div>
+        
+        <!-- Contenido Principal -->
+        <div class="admin-content">
+            <header class="admin-header">
+                <h1>Panel de Pedidos</h1>
+                <div class="admin-user">
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+            
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>Gestión de Pedidos</h2>
+                    <div class="action-buttons">
+                        <button class="btn-refresh" id="btnRefrescar">
+                            <i class="fas fa-sync-alt"></i> Actualizar
+                        </button>
+                        <button class="btn-pdf-all" id="btnGenerarInforme">
+                            <i class="fas fa-file-pdf"></i> Informe General
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Pedido</th>
+                                    <th>Cliente</th>
+                                    <th>Productos</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (pedidos && pedidos.length > 0) { %>
+                                    <% pedidos.forEach(pedido => { %>
+                                        <tr>
+                                            <td><%= pedido.id %></td>
+                                            <td>
+                                                <% if (pedido.cliente && pedido.cliente.nombre) { %>
+                                                    <%= pedido.cliente.nombre %>
+                                                <% } else { %>
+                                                    <%= pedido.nombre %><br>
+                                                    <small><%= pedido.email %></small>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <ul class="productos-list">
+                                                    <% pedido.productos.forEach(producto => { %>
+                                                        <li><%= producto.nombre %> (x<%= producto.cantidad %>)</li>
+                                                    <% }); %>
+                                                </ul>
+                                            </td>
+                                            <td><%= pedido.productos.reduce((total, p) => total + p.cantidad, 0) %></td>
+                                            <td>$<%= pedido.total.toLocaleString('es-CO') %></td>
+                                            <td><%= new Date(pedido.fechaCreacion).toLocaleDateString() %></td>
+                                            <td>
+                                                <span class="estado-badge <%= pedido.estado %>">
+                                                    <%= pedido.estado %>
+                                                </span>
+                                            </td>
+                                            <td class="acciones">
+                                                <% if (pedido.estado === 'pendiente') { %>
+                                                    <button class="btn-enviar" data-id="<%= pedido.id %>">
+                                                        <i class="fas fa-paper-plane"></i> Enviar
+                                                    </button>
+                                                <% } %>
+                                                <button class="btn-detalles" 
+                                                        data-id="<%= pedido.id %>" 
+                                                        data-pedido='<%- JSON.stringify(pedido) %>'>
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn-pdf" data-id="<%= pedido.id %>" data-pedido='<%- JSON.stringify(pedido) %>'>
+                                                    <i class="fas fa-file-pdf"></i> PDF
+                                                </button>
+                                                <button class="btn-eliminar" data-id="<%= pedido.id %>">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>       
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="text-center">No hay pedidos registrados</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles del pedido -->
+    <div id="modalDetalles" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="detallesPedido"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/pedidos.js"></script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner QR para Actualización de Stock</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray: #e0e0e0;
+            --success: #d4edda;
+            --success-text: #155724;
+            --error: #f8d7da;
+            --error-text: #721c24;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--gray-light);
+            color: #333;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        #qr-reader {
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .info-panel {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--gray-light);
+            display: none;
+        }
+        
+        .info-panel h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        .info-item {
+            margin-bottom: 8px;
+            display: flex;
+        }
+        
+        .info-item strong {
+            min-width: 80px;
+            font-weight: 600;
+        }
+        
+        .url-container {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: var(--gray);
+            border-radius: 6px;
+            word-break: break-all;
+        }
+        
+        .url-container a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .url-container a:hover {
+            text-decoration: underline;
+        }
+        
+        .scan-result {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .success {
+            background-color: var(--success);
+            color: var(--success-text);
+        }
+        
+        .error {
+            background-color: var(--error);
+            color: var(--error-text);
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 12px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--gray);
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .history-container {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--gray-light);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background-color: var(--white);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .history-item .time {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .history-empty {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-top: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Actualización de Stock por QR</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="scanner">Escáner</div>
+            <div class="tab" data-tab="history">Historial</div>
+        </div>
+        
+        <div class="tab-content active" id="scanner-tab">
+            <div id="qr-reader"></div>
+            
+            <div id="product-info" class="info-panel">
+                <h3>Datos del producto</h3>
+                <div class="info-item"><strong>ID:</strong> <span id="product-id">-</span></div>
+                <div class="info-item"><strong>Nombre:</strong> <span id="product-name">-</span></div>
+                <div class="info-item"><strong>Precio:</strong> <span id="product-price">-</span></div>
+                <div class="info-item"><strong>Peso:</strong> <span id="product-weight">-</span></div>
+                
+                <div id="url-container" class="url-container">
+                    <a href="#" id="product-url" target="_blank">Abrir enlace del producto</a>
+                </div>
+            </div>
+            
+            <div id="scan-result" class="scan-result"></div>
+            
+            <button id="start-scan" class="btn">Iniciar Escaneo</button>
+        </div>
+        
+        <div class="tab-content" id="history-tab">
+            <div class="history-container" id="scan-history">
+                <div class="history-empty">No hay escaneos recientes</div>
+            </div>
+            <button id="clear-history" class="btn btn-secondary">Limpiar historial</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos DOM
+            const resultContainer = document.getElementById('scan-result');
+            const startScanButton = document.getElementById('start-scan');
+            const productInfo = document.getElementById('product-info');
+            const scanHistory = document.getElementById('scan-history');
+            const clearHistoryButton = document.getElementById('clear-history');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Campos de información del producto
+            const productId = document.getElementById('product-id');
+            const productName = document.getElementById('product-name');
+            const productPrice = document.getElementById('product-price');
+            const productWeight = document.getElementById('product-weight');
+            const productUrl = document.getElementById('product-url');
+            const urlContainer = document.getElementById('url-container');
+            
+            let html5QrCode;
+            let scanHistoryData = JSON.parse(localStorage.getItem('qrScanHistory')) || [];
+            
+            // Inicializar historial
+            updateHistoryDisplay();
+            
+            // Cambio de pestañas
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(`${this.dataset.tab}-tab`).classList.add('active');
+                });
+            });
+            
+            // Iniciar/Detener escaneo
+            startScanButton.addEventListener('click', function() {
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        startScanButton.textContent = 'Iniciar Escaneo';
+                    }).catch(err => {
+                        console.error('Error al detener el escaneo:', err);
+                    });
+                } else {
+                    startScanner();
+                    startScanButton.textContent = 'Detener Escaneo';
+                }
+            });
+            
+            // Limpiar historial
+            clearHistoryButton.addEventListener('click', function() {
+                scanHistoryData = [];
+                localStorage.setItem('qrScanHistory', JSON.stringify(scanHistoryData));
+                updateHistoryDisplay();
+            });
+            
+            function startScanner() {
+                html5QrCode = new Html5Qrcode("qr-reader");
+                const qrConfig = { fps: 10, qrbox: { width: 250, height: 250 } };
+                
+                html5QrCode.start(
+                    { facingMode: "environment" }, 
+                    qrConfig,
+                    onScanSuccess
+                ).catch(function(err) {
+                    showResult(`Error al iniciar escáner: ${err}`, 'error');
+                });
+            }
+            
+            function onScanSuccess(decodedText) {
+                // Detener el escaneo después de un resultado exitoso
+                if (html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        startScanButton.textContent = 'Escanear otro QR';
+                    }).catch(err => {
+                        console.error('Error al detener el escaneo:', err);
+                    });
+                }
+                
+                try {
+                    // Intentamos parsear el texto del QR
+                    let qrData;
+                    
+                    // Intentamos primero con JSON
+                    try {
+                        qrData = JSON.parse(decodedText);
+                    } catch (e) {
+                        // Si no es JSON, verificamos si tiene formato de texto específico
+                        const lines = decodedText.split('\n');
+                        qrData = {};
+                        
+                        for (const line of lines) {
+                            if (line.includes('ID:')) {
+                                qrData.id = line.split('ID:')[1].trim();
+                            } else if (line.includes('Nombre:')) {
+                                qrData.nombre = line.split('Nombre:')[1].trim();
+                            } else if (line.includes('Precio:')) {
+                                qrData.precio = line.split('Precio:')[1].trim();
+                            } else if (line.includes('Peso:')) {
+                                qrData.peso = line.split('Peso:')[1].trim();
+                            } else if (line.includes('URL:')) {
+                                qrData.url = line.split('URL:')[1].trim();
+                            }
+                        }
+                    }
+                    
+                    // Si no pudimos extraer un ID, mostramos error
+                    if (!qrData.id && !qrData._id) {
+                        throw new Error('No se pudo encontrar el ID del producto en el QR');
+                    }
+                    
+                    // Mostrar datos del producto
+                    showProductInfo(qrData);
+                    
+                    // Guardar en historial
+                    addToHistory(qrData);
+                    
+                    // Hacemos la solicitud para actualizar el stock
+                    fetch('/api/actualizacionQR', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productoId: qrData.id || qrData._id
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showResult('Stock actualizado correctamente', 'success');
+                        } else {
+                            showResult(`Error: ${data.message}`, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        showResult(`Error al comunicarse con el servidor: ${error.message}`, 'error');
+                    });
+                    
+                } catch (error) {
+                    showResult(`Error al procesar el QR: ${error.message}`, 'error');
+                }
+            }
+            
+            function showProductInfo(qrData) {
+                productId.textContent = qrData.id || qrData._id || '-';
+                productName.textContent = qrData.nombre || qrData.name || '-';
+                productPrice.textContent = qrData.precio || qrData.price || '-';
+                productWeight.textContent = qrData.peso || qrData.weight || '-';
+                
+                if (qrData.url) {
+                    productUrl.href = qrData.url;
+                    urlContainer.style.display = 'block';
+                } else {
+                    urlContainer.style.display = 'none';
+                }
+                
+                productInfo.style.display = 'block';
+            }
+            
+            function showResult(message, type) {
+                resultContainer.style.display = 'block';
+                resultContainer.textContent = message;
+                resultContainer.className = 'scan-result ' + type;
+                
+                // Después de 5 segundos ocultamos el mensaje
+                setTimeout(() => {
+                    resultContainer.style.display = 'none';
+                }, 5000);
+            }
+            
+            function addToHistory(qrData) {
+                const timestamp = new Date();
+                const historyItem = {
+                    id: qrData.id || qrData._id,
+                    name: qrData.nombre || qrData.name || 'Producto desconocido',
+                    timestamp: timestamp.getTime()
+                };
+                
+                scanHistoryData.unshift(historyItem);
+                
+                // Limitar a 20 elementos
+                if (scanHistoryData.length > 20) {
+                    scanHistoryData.pop();
+                }
+                
+                localStorage.setItem('qrScanHistory', JSON.stringify(scanHistoryData));
+                updateHistoryDisplay();
+            }
+            
+            function updateHistoryDisplay() {
+                if (scanHistoryData.length === 0) {
+                    scanHistory.innerHTML = '<div class="history-empty">No hay escaneos recientes</div>';
+                    return;
+                }
+                
+                scanHistory.innerHTML = '';
+                scanHistoryData.forEach(item => {
+                    const date = new Date(item.timestamp);
+                    const timeString = date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
+                    
+                    const historyElement = document.createElement('div');
+                    historyElement.className = 'history-item';
+                    historyElement.innerHTML = `
+                        <div class="item-name">${item.name} (${item.id})</div>
+                        <div class="time">${timeString}</div>
+                    `;
+                    
+                    scanHistory.appendChild(historyElement);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

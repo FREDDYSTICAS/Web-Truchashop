@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="/img/logo.png" alt="TruchaShop Logo" class="login-logo">
+                <h1>Panel de Administrador</h1>
+                <p>Accede para gestionar tu tienda de truchas</p>
+            </div>
+            
+            <div class="login-methods">
+                <a href="/auth/google" class="login-btn google-btn">
+                    <img src="/img/google-icon.svg" alt="Google Logo">
+                    <span>Iniciar sesión con Google</span>
+                </a>
+            </div>
+            
+            <div class="login-footer">
+                <p><a href="/">Volver a la tienda</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+</body>
+</html>

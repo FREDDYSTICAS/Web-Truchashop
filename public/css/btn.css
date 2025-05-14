@@ -1,0 +1,39 @@
+/* Añadir estos estilos al archivo CSS */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-iva {
+    background-color: #9b59b6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-iva:hover {
+    background-color: #8e44ad;
+}
+
+.btn-pdf {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-pdf:hover {
+    background-color: #c0392b;
+}

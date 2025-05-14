@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Ventas - TruchaShop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/ventas.css">
+    <link rel="stylesheet" href="/css/pedidos.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Menú Hamburguesa -->
+        <div class="burger-menu">
+            <i class="fas fa-bars" id="burgerIcon"></i>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-fish"></i> TruchaShop
+            </div>
+            <ul class="admin-menu">
+                <li><a href="/panel"><i class="fas fa-box"></i> Productos</a></li>
+                <li class="active"><a href="/ventas"><i class="fas fa-chart-line"></i> Ventas</a></li>
+                <li><a href="/pedidos"><i class="fas fa-clipboard-list"></i> Pedidos</a></li>
+                <li><a href="/panel-clientes"><i class="fas fa-users"></i> Clientes</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="/"><i class="fas fa-home"></i> Volver al sitio</a></li>
+            </ul>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="admin-content">
+            <header class="admin-header">
+                <h1>Panel de Ventas</h1>
+                <div class="admin-user">
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+            
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>Historial de Ventas</h2>
+                    <div class="action-buttons">
+                        <button class="btn-refresh" id="btnRefrescar">
+                            <i class="fas fa-sync-alt"></i> Actualizar
+                        </button>
+                        <button class="btn-pdf" id="btnGenerarInforme">
+                            <i class="fas fa-file-pdf"></i> Generar Informe
+                        </button>
+                        <div class="filtros">
+                            <input type="date" id="fechaInicio" class="filtro-fecha">
+                            <span>a</span>
+                            <input type="date" id="fechaFin" class="filtro-fecha">
+                            <button class="btn-filtrar" id="btnFiltrar">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="resumen-ventas">
+                        <div class="resumen-card">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div>
+                                <h3>Total Ventas</h3>
+                                <p id="totalVentas">$0</p>
+                            </div>
+                        </div>
+                        <div class="resumen-card">
+                            <i class="fas fa-boxes"></i>
+                            <div>
+                                <h3>Productos Vendidos</h3>
+                                <p id="totalProductos">0</p>
+                            </div>
+                        </div>
+                        <div class="resumen-card">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h3>Clientes Atendidos</h3>
+                                <p id="totalClientes">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Venta</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Productos</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th>Método Pago</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (ventas && ventas.length > 0) { %>
+                                    <% ventas.forEach(venta => { %>
+                                        <tr>
+                                            <td><%= venta.id %></td>
+                                            <td><%= new Date(venta.fecha).toLocaleString() %></td>
+                                            <td><%= venta.cliente ? venta.cliente.nombre : 'Cliente no disponible' %></td>
+                                            <td>
+                                                <ul class="productos-list">
+                                                    <% venta.productos.forEach(producto => { %>
+                                                        <li><%= producto.nombre %></li>
+                                                    <% }); %>
+                                                </ul>
+                                            </td>
+                                            <td><%= venta.productos.reduce((total, p) => total + p.cantidad, 0) %></td>
+                                            <td>$<%= venta.total.toLocaleString('es-CO') %></td>
+                                            <td><%= venta.metodoPago %></td>
+                                            <td class="acciones">
+                                                <button class="btn-detalles" data-id="<%= venta.id %>">
+                                                    <i class="fas fa-eye"></i> Detalles
+                                                </button>
+                                                <button class="btn-pdf-small" data-id="<%= venta.id %>">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="text-center">No hay ventas registradas</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalles Venta -->
+    <div class="modal" id="modalDetalles">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalles de Venta</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body" id="detallesVenta">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-pdf" id="btnGenerarPdfIndividual">
+                    <i class="fas fa-file-pdf"></i> Generar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Pasar datos de ventas al JS desde EJS
+        const ventasDesdeServidor = <%- JSON.stringify(ventas) %>;
+    </script>
+    <script src="/js/ventas.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruchaShop - Venta de Truchas Frescas</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- AOS (Animate On Scroll) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- jQuery (necesario para algunas funciones) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- AOS (Animate On Scroll) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- para imprimir en pdf-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Inicialización de AOS -->
+    <script>
+    AOS.init();
+    </script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-fish"></i> TruchaShop
+            </div>
+            
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <div class="main-nav" id="mainNav">
+                <ul class="nav-links">
+                    <li><a href="#">Inicio</a></li>
+                    <li class="dropdown">
+                        <a href="menu-productos" class="dropdown-toggle">Productos</a>
+                        <ul id="menu-productos" class="dropdown-menu">
+                            <li><a href="#">Truchas Frescas</a></li>
+                            <li><a href="#">Filetes de Trucha</a></li>
+                            <li><a href="#">Truchas Ahumadas</a></li>
+                            <li><a href="#">Truchas Marinadas</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Nuestra Granja</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Historia</a></li>
+                            <li><a href="#">Proceso de Crianza</a></li>
+                            <li><a href="#">Sostenibilidad</a></li>
+                            <li><a href="#">Certificaciones</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">Recetas</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Trucha al Horno</a></li>
+                            <li><a href="#">Trucha a la Parrilla</a></li>
+                            <li><a href="#">Ceviche de Trucha</a></li>
+                            <li><a href="#">Trucha Ahumada con Pasta</a></li>
+                            <li><a href="#">Enviar tu Receta</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#Contacto">Contacto</a></li>
+                    <li><a href="./auth/login" target="_blank" rel="noopener noreferrer">Administrador</a></li>
+
+                    
+                </ul>
+<!-- Carrito de compras en la barra de navegación -->
+<div class="cart-container">
+    <div id="cartIcon" class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cartCount" class="cart-count">0</span>
+    </div>
+    <div id="cartDropdown" class="cart-dropdown">
+        <h3>Tu carrito</h3>
+        <ul id="cartItems"></ul>
+        <div class="cart-actions">
+        <button id="checkoutBtn" class="btn">Finalizar compra</button>
+        <button id="generatePDF" class="btn">Descargar detalle</button>
+    </div>
+    </div>
+</div>
+</header>
+    <section class="hero">
+        <div class="container">
+            <h1>Truchas Frescas de Alta Calidad</h1>
+            <img src="/img/450_1000.jpg" alt="Truchas frescas">
+            <p>Ofrecemos las mejores truchas de la región, criadas en aguas cristalinas
+            y con los más altos estándares de calidad para garantizar 
+            el mejor sabor en su mesa.</p>
+            <a href="#miSeccion" class="btn1">Ver Productos</a>
+        </div>
+    </section>
+
+    <!-- manejo de productos directamente desde el server conla base -->
+    <section id="miSeccion" class="container">
+        <h2 class="section-title">Nuestros Productos</h2>
+        <div class="products">
+          <% productos.forEach(producto => { %>
+            <div class="product-card">
+              <img src="<%= producto.imagen %>" alt="<%= producto.nombre %>" class="product-image">
+              <div class="product-info">
+                <h3><%= producto.nombre %></h3>
+                <p class="product-price">$<%= producto.precio.toLocaleString() %></p>
+                <p><%= producto.peso %></p>
+                <button class="add-to-cart">Añadir al Carrito</button>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+      
+
+<!-- Features Section -->
+<section class="container features-section">
+    <h2 class="section-title">¿Por qué elegirnos?</h2>
+    <div class="features">
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-water"></i></div>
+            <h3>Agua Pura de Montaña</h3>
+            <p>Nuestras truchas son criadas en aguas cristalinas de montaña, garantizando un sabor limpio y natural.</p>
+        </div>
+        
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-seedling"></i></div>
+            <h3>Alimentación Natural</h3>
+            <p>Alimentamos a nuestras truchas con dietas naturales y sostenibles para asegurar la mejor calidad.</p>
+        </div>
+        
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-truck"></i></div>
+            <h3>Entrega a Domicilio</h3>
+            <p>Enviamos nuestros productos frescos directamente a su puerta en menos de 24 horas.</p>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <p class="testimonial-text">"Las mejores truchas que he probado. El sabor es excepcional y siempre llegan frescas a mi casa."</p>
+                    <p class="testimonial-author">- María González, Chef</p>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">"Desde que descubrí TruchaShop, nunca compro pescado en otro lugar. Calidad garantizada."</p>
+                    <p class="testimonial-author">- Carlos Rodríguez, Cliente Habitual</p>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">"La trucha ahumada es simplemente espectacular. Mis invitados siempre quedan impresionados."</p>
+                    <p class="testimonial-author">- Ana Martínez, Entusiasta Culinaria</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <!-- Registration Section -->
+<section id="registro" class="registration-section">
+    <div class="container">
+        <h2 class="section-title">Regístrate como Cliente</h2>
+        <p class="section-description">Únete a nuestra comunidad y disfruta de beneficios exclusivos</p>
+        
+        <div class="registration-container">
+            <div class="registration-header">
+                <i class="fas fa-user-plus"></i>
+                <h3>Datos Personales</h3>
+            </div>
+            
+            <form id="clientRegistrationForm" class="registration-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipoDocumento">
+                            <i class="fas fa-id-card"></i> Tipo de Documento
+                        </label>
+                        <select id="tipoDocumento" name="tipoDocumento" required>
+                            <option value="">Seleccionar</option>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="TI">Tarjeta de Identidad</option>
+                            <option value="PP">Pasaporte</option>
+                            <option value="NIT">NIT</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="numeroDocumento">
+                            <i class="fas fa-fingerprint"></i> Número de Documento
+                        </label>
+                        <input type="text" id="numeroDocumento" name="numeroDocumento" placeholder="Ingrese su número de documento" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="nombreCompleto">
+                            <i class="fas fa-user"></i> Nombre Completo
+                        </label>
+                        <input type="text" id="nombreCompleto" name="nombreCompleto" placeholder="Ingrese su nombre completo" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numeroContacto">
+                            <i class="fas fa-phone"></i> Número de Contacto
+                        </label>
+                        <input type="tel" id="numeroContacto" name="numeroContacto" placeholder="Ej: 3001234567" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="correoElectronico">
+                            <i class="fas fa-envelope"></i> Correo Electrónico
+                        </label>
+                        <input type="email" id="correoElectronico" name="correoElectronico" placeholder="ejemplo@correo.com" required>
+                    </div>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="terminos" name="terminos" required>
+                    <label for="terminos">
+                        Acepto los <a href="#" class="terms-link">términos y condiciones</a> y la <a href="#" class="terms-link">política de privacidad</a>
+                    </label>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">
+                        Deseo recibir ofertas especiales y noticias sobre TruchaShop
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>TruchaShop</h3>
+                <p>Ofreciendo las mejores truchas desde 2010.</p>
+                <div id="Contacto" class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#miSeccion">Productos</a></li>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#Contacto">Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Carretera Nacional km 5, Lago Azul</li>
+                    <li><i class="fas fa-phone"></i> +123 456 7890</li>
+                    <li><i class="fas fa-envelope"></i> info@truchashop.com</li>
+                    
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Horario</h3>
+                <ul>
+                    <li><i class="fas fa-clock"></i> Lunes - Viernes: 8:00 - 18:00</li>
+                    <li><i class="fas fa-clock"></i> Sábado: 9:00 - 16:00</li>
+                    <li><i class="fas fa-times-circle"></i> Domingo: Cerrado</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copyright">
+            &copy; 2025 TruchaShop. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+
+    <script src="/js/index.js"></script>
+    <!-- provisional mientra implemento pasarela de pago  -->
+
+    <script>
+        document.getElementById("checkout-form").addEventListener("submit", function (e) {
+            // Obtener el carrito desde localStorage
+            const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        
+            // Convertir el carrito a JSON y guardarlo en un campo oculto
+            const inputCarrito = document.createElement("input");
+            inputCarrito.type = "hidden";
+            inputCarrito.name = "carrito";
+            inputCarrito.value = JSON.stringify(carrito);
+        
+            // Agregar el campo oculto al formulario
+            this.appendChild(inputCarrito);
+        });
+        </script>
+</body>
+</html>

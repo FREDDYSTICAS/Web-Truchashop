@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Barra lateral -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <img src="/img/logo.png" alt="TruchaShop Logo" class="admin-logo">
+                <h2>TruchaShop</h2>
+            </div>
+            
+            <div class="user-info">
+                <img src="<%= user.profileImage %>" alt="<%= user.displayName %>" class="user-image">
+                <div class="user-details">
+                    <h3><%= user.displayName %></h3>
+                    <p><%= user.email %></p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="/panel"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="/panel/productos"><i class="fas fa-fish"></i> Productos</a></li>
+                    <li><a href="/panel/pedidos"><i class="fas fa-shopping-cart"></i> Pedidos</a></li>
+                    <li><a href="/panel/usuarios"><i class="fas fa-users"></i> Usuarios</a></li>
+                    <li><a href="/panel/configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+                    <li class="logout"><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <header class="main-header">
+                <h1>Dashboard</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn-secondary">Ver Tienda</a>
+                </div>
+            </header>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-fish"></i>
+                    <div class="stat-info">
+                        <h3>Productos</h3>
+                        <p class="stat-number">24</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div class="stat-info">
+                        <h3>Pedidos</h3>
+                        <p class="stat-number">8</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-info">
+                        <h3>Usuarios</h3>
+                        <p class="stat-number">56</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="stat-info">
+                        <h3>Ingresos</h3>
+                        <p class="stat-number">$2,580</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="latest-orders">
+                    <h2>Últimos Pedidos</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#1008</td>
+                                <td>Juan Pérez</td>
+                                <td>13/05/2025</td>
+                                <td><span class="status-badge completed">Completado</span></td>
+                                <td>$125.00</td>
+                                <td><a href="#" class="btn-action">Ver</a></td>
+                            </tr>
+                            <tr>
+                                <td>#1007</td>
+                                <td>María López</td>
+                                <td>12/05/2025</td>
+                                <td><span class="status-badge pending">Pendiente</span></td>
+                                <td>$280.50</td>
+                                <td><a href="#" class="btn-action">Ver</a></td>
+                            </tr>
+                            <tr>
+                                <td>#1006</td>
+                                <td>Carlos Rodríguez</td>
+                                <td>10/05/2025</td>
+                                <td><span class="status-badge processing">En proceso</span></td>
+                                <td>$92.75</td>
+                                <td><a href="#" class="btn-action">Ver</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="/panel/pedidos" class="view-all">Ver todos los pedidos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin2.js"></script>
+</body>
+</html>
