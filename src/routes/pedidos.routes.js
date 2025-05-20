@@ -29,4 +29,5 @@ router.delete('/:id', pedidoController.eliminarPedido);
 router.post('/:id/generar-pdf', pdfController.generarPdfPedido);
 router.post('/generar-informe/general', pdfController.generarInformeGeneral);
 
+
 module.exports = router;

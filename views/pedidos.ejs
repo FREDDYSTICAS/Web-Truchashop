@@ -138,6 +138,215 @@
             <div id="detallesPedido"></div>
         </div>
     </div>
+    <!-- Modal para detalles de pedido -->
+<div id="modalDetalles" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div id="detallesPedido" class="modal-body">
+            <!-- El contenido se carga dinámicamente -->
+        </div>
+    </div>
+</div>
+<!-- Modal para gestión de stock -->
+<div id="modalStock" class="modal">
+    <div class="modal-content modal-lg">
+        <span class="close-modal">&times;</span>
+        <div id="stockContent" class="modal-body">
+            <!-- El contenido se carga dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<!-- Estilos adicionales -->
+<style>
+    /* Estilos para modales */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        width: 80%;
+        max-width: 800px;
+        animation: modalFadeIn 0.3s;
+    }
+
+    .modal-lg {
+        max-width: 1000px;
+    }
+
+    .close-modal {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+        color: #000;
+        text-decoration: none;
+    }
+
+    @keyframes modalFadeIn {
+        from {opacity: 0; transform: translateY(-20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Estilos para tabla de stock */
+    .stock-container {
+        padding: 10px 0;
+    }
+
+    .stock-actions {
+        margin-bottom: 15px;
+        text-align: right;
+    }
+
+    .stock-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .stock-table th,
+    .stock-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .stock-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .stock-table tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .stock-critico {
+        color: #d9534f;
+        font-weight: bold;
+    }
+
+    .stock-bajo {
+        color: #f0ad4e;
+        font-weight: bold;
+    }
+
+    .btn-editar-stock {
+        background-color: #5bc0de;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background-color 0.2s;
+    }
+
+    .btn-editar-stock:hover {
+        background-color: #31b0d5;
+    }
+
+    /* Estilos para el modal de detalles de pedido */
+    .detalle-pedido {
+        padding: 10px 0;
+    }
+
+    .detalle-seccion {
+        margin-bottom: 25px;
+    }
+
+    .detalle-seccion h3 {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+        color: #3498db;
+    }
+
+    .detalle-productos {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .detalle-productos th,
+    .detalle-productos td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .detalle-productos th {
+        background-color: #f8f9fa;
+    }
+
+    .total-value {
+        font-weight: bold;
+        font-size: 1.1em;
+        color: #2c3e50;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .estado-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .estado-badge.pendiente {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .estado-badge.procesando {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .estado-badge.enviado {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .estado-badge.entregado {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .estado-badge.cancelado {
+        background-color: #e2e3e5;
+        color: #383d41;
+    }
+
+    /* Estilos para el formulario de edición de stock en SweetAlert2 */
+    .editar-stock-form {
+        padding: 10px 0;
+    }
+
+    .editar-stock-form p {
+        margin-bottom: 15px;
+    }
+</style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

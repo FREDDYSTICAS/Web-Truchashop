@@ -1,114 +1,178 @@
-document.addEventListener('DOMContentLoaded', function () {
+// Función principal que encapsula todo el código
+(function initVentasPanel() {
     // Elementos del DOM
-    const sidebar = document.getElementById('sidebar');
-    const burgerIcon = document.getElementById('burgerIcon');
-    const btnRefrescar = document.getElementById('btnRefrescar');
-    const btnGenerarInforme = document.getElementById('btnGenerarInforme');
-    const btnFiltrar = document.getElementById('btnFiltrar');
-    const fechaInicio = document.getElementById('fechaInicio');
-    const fechaFin = document.getElementById('fechaFin');
-    const btnsDetalles = document.querySelectorAll('.btn-detalles');
-    const btnsPdfIndividual = document.querySelectorAll('.btn-pdf-small');
-    const btnGenerarPdfIndividual = document.getElementById('btnGenerarPdfIndividual');
-    const modalDetalles = document.getElementById('modalDetalles');
-    const closeModal = document.querySelectorAll('.close-modal');
+    const DOM = {
+        sidebar: document.getElementById('sidebar'),
+        burgerIcon: document.getElementById('burgerIcon'),
+        btnRefrescar: document.getElementById('btnRefrescar'),
+        btnGenerarInforme: document.getElementById('btnGenerarInforme'),
+        btnFiltrar: document.getElementById('btnFiltrar'),
+        fechaInicio: document.getElementById('fechaInicio'),
+        fechaFin: document.getElementById('fechaFin'),
+        modalDetalles: document.getElementById('modalDetalles'),
+        btnGenerarPdfIndividual: document.getElementById('btnGenerarPdfIndividual'),
+        detallesVenta: document.getElementById('detallesVenta'),
+        totalVentas: document.getElementById('totalVentas'),
+        totalProductos: document.getElementById('totalProductos'),
+        totalClientes: document.getElementById('totalClientes')
+    };
 
     // Obtener ventas desde el servidor (pasadas en el script del EJS)
     const ventas = window.ventasDesdeServidor || [];
     let ventaSeleccionada = null;
 
-    // Inicializar fechas con la fecha actual
-    const hoy = new Date().toISOString().split('T')[0];
-    fechaInicio.value = hoy;
-    fechaFin.value = hoy;
+    // Inicialización
+    function initialize() {
+        setupEventListeners();
+        setupDates();
+        updateSummary(ventas);
+        setupDynamicEventListeners();
+    }
 
-    // Inicializar resumen de ventas
-    actualizarResumen(ventas);
-
-    // Toggle sidebar en móvil
-    burgerIcon.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
-
-    // Refrescar la página
-    btnRefrescar.addEventListener('click', () => {
-        window.location.reload();
-    });
-
-    // Filtrar ventas por fecha
-    btnFiltrar.addEventListener('click', () => {
-        if (fechaInicio.value && fechaFin.value) {
-            window.location.href = `/ventas?inicio=${fechaInicio.value}&fin=${fechaFin.value}`;
-        } else {
-            Swal.fire('Error', 'Debes seleccionar ambas fechas', 'error');
-        }
-    });
-
-    // Generar informe PDF general
-    btnGenerarInforme.addEventListener('click', () => {
-        const inicio = fechaInicio.value || '';
-        const fin = fechaFin.value || '';
-        Swal.fire({
-            title: 'Generar Informe PDF',
-            text: '¿Deseas generar un informe profesional con todas las ventas?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#e74c3c',
-            cancelButtonColor: '#7f8c8d',
-            confirmButtonText: 'Generar PDF',
-            cancelButtonText: 'Cancelar'
-        }).then(result => {
-            if (result.isConfirmed) {
-                window.open(`/ventas/informe/pdf?inicio=${inicio}&fin=${fin}`, '_blank');
+    // Configurar listeners de eventos
+    function setupEventListeners() {
+        // Menú hamburguesa
+        DOM.burgerIcon?.addEventListener('click', toggleSidebar);
+        
+        // Botón refrescar
+        DOM.btnRefrescar?.addEventListener('click', refreshPage);
+        
+        // Botón filtrar
+        DOM.btnFiltrar?.addEventListener('click', filterByDate);
+        
+        // Botón generar informe PDF
+        DOM.btnGenerarInforme?.addEventListener('click', generatePdfReport);
+        
+        // Cerrar modal
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => DOM.modalDetalles.style.display = 'none');
+        });
+        
+        // Cerrar modal haciendo clic fuera
+        window.addEventListener('click', (event) => {
+            if (event.target === DOM.modalDetalles) {
+                DOM.modalDetalles.style.display = 'none';
             }
         });
-    });
+    }
 
-    // Ver detalles de venta
-    btnsDetalles.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const ventaId = this.getAttribute('data-id');
-            cargarDetallesVenta(ventaId);
-            modalDetalles.style.display = 'block';
+    // Configurar listeners dinámicos (para elementos que pueden ser añadidos después)
+    function setupDynamicEventListeners() {
+        // Delegación de eventos para botones de detalles
+        document.addEventListener('click', function(e) {
+            // Botones de detalles
+            if (e.target.closest('.btn-detalles')) {
+                const btn = e.target.closest('.btn-detalles');
+                const ventaId = btn.getAttribute('data-id');
+                loadSaleDetails(ventaId);
+                DOM.modalDetalles.style.display = 'block';
+            }
+            
+            // Botones PDF individuales en la tabla
+            if (e.target.closest('.btn-pdf-small')) {
+                const btn = e.target.closest('.btn-pdf-small');
+                const ventaId = btn.getAttribute('data-id');
+                e.stopPropagation();
+                generateSinglePdf(ventaId);
+            }
+            
+            // Botones eliminar
+            if (e.target.closest('.btn-eliminar')) {
+                const btn = e.target.closest('.btn-eliminar');
+                const ventaId = btn.getAttribute('data-id');
+                e.stopPropagation();
+                confirmDeleteSale(ventaId);
+            }
         });
-    });
-
-    // Generar PDF individual desde tabla
-    btnsPdfIndividual.forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const ventaId = this.getAttribute('data-id');
-            generarPdfIndividual(ventaId);
+        
+        // Botón PDF en modal
+        DOM.btnGenerarPdfIndividual?.addEventListener('click', () => {
+            if (ventaSeleccionada) {
+                generateSinglePdf(ventaSeleccionada.id || ventaSeleccionada._id);
+            }
         });
-    });
+    }
 
-    // Generar PDF desde modal
-    btnGenerarPdfIndividual?.addEventListener('click', () => {
-        if (ventaSeleccionada) {
-            generarPdfIndividual(ventaSeleccionada.id || ventaSeleccionada._id);
+    // Configurar fechas iniciales
+    function setupDates() {
+        const hoy = new Date().toISOString().split('T')[0];
+        if (DOM.fechaInicio) DOM.fechaInicio.value = hoy;
+        if (DOM.fechaFin) DOM.fechaFin.value = hoy;
+    }
+
+    // Funciones de interacción
+    function toggleSidebar() {
+        DOM.sidebar.classList.toggle('active');
+    }
+
+    function refreshPage() {
+        window.location.reload();
+    }
+
+    function filterByDate() {
+        if (DOM.fechaInicio.value && DOM.fechaFin.value) {
+            window.location.href = `/ventas?inicio=${DOM.fechaInicio.value}&fin=${DOM.fechaFin.value}`;
+        } else {
+            showError('Debes seleccionar ambas fechas');
         }
-    });
+    }
 
-    // Cerrar modal
-    closeModal.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modalDetalles.style.display = 'none';
+    function generatePdfReport() {
+        showConfirmation(
+            'Generar Informe PDF',
+            '¿Deseas generar un informe profesional con todas las ventas?',
+            () => {
+                const inicio = DOM.fechaInicio.value || '';
+                const fin = DOM.fechaFin.value || '';
+                window.open(`/ventas/informe/pdf?inicio=${inicio}&fin=${fin}`, '_blank');
+            }
+        );
+    }
+
+    function generateSinglePdf(ventaId) {
+        showConfirmation(
+            'Generar Factura PDF',
+            '¿Deseas generar la factura en formato PDF?',
+            () => window.open(`/ventas/pdf/${ventaId}`, '_blank')
+        );
+    }
+
+    function confirmDeleteSale(ventaId) {
+        showConfirmation(
+            'Eliminar Venta',
+            '¿Estás seguro de que deseas eliminar esta venta? Esta acción no se puede deshacer.',
+            () => deleteSale(ventaId)
+        );
+    }
+
+    function deleteSale(ventaId) {
+        fetch(`/ventas/eliminar/${ventaId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showSuccess('Venta eliminada correctamente');
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                throw new Error(data.message || 'Error al eliminar la venta');
+            }
+        })
+        .catch(error => {
+            showError(error.message);
         });
-    });
+    }
 
-    // Cerrar modal haciendo clic fuera de él
-    window.addEventListener('click', (event) => {
-        if (event.target === modalDetalles) {
-            modalDetalles.style.display = 'none';
-        }
-    });
-
-    // ---------------- Funciones ----------------
-
-    function actualizarResumen(ventas) {
-        const totalVentas = ventas.reduce((sum, venta) => sum + (parseFloat(venta.total) || 0), 0);
+    // Funciones de actualización de UI
+    function updateSummary(ventas) {
+        if (!DOM.totalVentas || !DOM.totalProductos || !DOM.totalClientes) return;
+        
+        const totalVentas = ventas.reduce((sum, venta) => sum + (parseFloat(venta.total) || 0, 0));
         const totalProductos = ventas.reduce((sum, venta) => {
-            return sum + venta.productos.reduce((sumP, p) => sumP + (parseInt(p.cantidad) || 0), 0);
+            return sum + venta.productos.reduce((sumP, p) => sumP + (parseInt(p.cantidad) || 0, 0));
         }, 0);
 
         const clientesUnicos = new Set();
@@ -119,13 +183,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        document.getElementById('totalVentas').textContent = `$${totalVentas.toLocaleString('es-CO')}`;
-        document.getElementById('totalProductos').textContent = totalProductos.toLocaleString('es-CO');
-        document.getElementById('totalClientes').textContent = clientesUnicos.size.toLocaleString('es-CO');
+        DOM.totalVentas.textContent = `$${totalVentas.toLocaleString('es-CO')}`;
+        DOM.totalProductos.textContent = totalProductos.toLocaleString('es-CO');
+        DOM.totalClientes.textContent = clientesUnicos.size.toLocaleString('es-CO');
     }
 
-    function cargarDetallesVenta(ventaId) {
-        document.getElementById('detallesVenta').innerHTML = `
+    function loadSaleDetails(ventaId) {
+        DOM.detallesVenta.innerHTML = `
             <div class="loading-spinner">
                 <i class="fas fa-spinner fa-spin"></i> Cargando detalles...
             </div>
@@ -139,13 +203,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.success) {
                     ventaSeleccionada = data.venta;
-                    renderizarDetallesVenta(ventaSeleccionada);
+                    renderSaleDetails(ventaSeleccionada);
                 } else {
                     throw new Error(data.message || 'Error en la respuesta');
                 }
             })
             .catch(error => {
-                document.getElementById('detallesVenta').innerHTML = `
+                DOM.detallesVenta.innerHTML = `
                     <div class="error-detalle">
                         <p><i class="fas fa-exclamation-circle"></i> ${error.message}</p>
                     </div>
@@ -153,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    function renderizarDetallesVenta(venta) {
+    function renderSaleDetails(venta) {
         const ventaId = venta.id || venta._id;
         const cliente = venta.cliente || {
             nombre: 'Cliente no disponible',
@@ -171,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </tr>
         `).join('');
 
-        const detallesHTML = `
+        DOM.detallesVenta.innerHTML = `
             <div class="detalle-venta">
                 <div class="encabezado-venta">
                     <div>
@@ -213,24 +277,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 </table>
             </div>
         `;
-
-        document.getElementById('detallesVenta').innerHTML = detallesHTML;
     }
 
-    function generarPdfIndividual(ventaId) {
+    // Funciones de utilidad
+    function showError(message) {
+        Swal.fire('Error', message, 'error');
+    }
+
+    function showSuccess(message) {
+        Swal.fire('Éxito', message, 'success');
+    }
+
+    function showConfirmation(title, text, callback) {
         Swal.fire({
-            title: 'Generar Factura PDF',
-            text: '¿Deseas generar la factura en formato PDF?',
+            title,
+            text,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c',
             cancelButtonColor: '#7f8c8d',
-            confirmButtonText: 'Generar PDF',
+            confirmButtonText: 'Confirmar',
             cancelButtonText: 'Cancelar'
-        }).then((result) => {
+        }).then(result => {
             if (result.isConfirmed) {
-                window.open(`/ventas/pdf/${ventaId}`, '_blank');
+                callback();
             }
         });
     }
-});
+
+    // Inicializar la aplicación
+    document.addEventListener('DOMContentLoaded', initialize);
+})();

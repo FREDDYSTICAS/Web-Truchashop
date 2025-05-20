@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/ventas.css">
     <link rel="stylesheet" href="/css/pedidos.css">
+    <link rel="stylesheet" href="/css/productos.css">
 </head>
 <body>
     <div class="admin-container">
@@ -128,6 +129,9 @@
                                                 <button class="btn-pdf-small" data-id="<%= venta.id %>">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </button>
+                                                <button class="btn-eliminar" data-id="<%= venta.id %>">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     <% }); %>
@@ -164,6 +168,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         // Pasar datos de ventas al JS desde EJS
         const ventasDesdeServidor = <%- JSON.stringify(ventas) %>;

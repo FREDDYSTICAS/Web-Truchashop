@@ -956,41 +956,453 @@ aca agregue mas css important
     cursor: not-allowed;
 }
 
-/* Estilos para el formulario de checkout en SweetAlert */
+/* Estilos mejorados para el formulario de checkout en TruchaShop */
+
+/* Variables de colores y estilos generales */
+
+:root {
+  --color-primary: #3a5d7a;
+  --color-primary-light: #4d7394;
+  --color-accent: #ff7f50;
+  --color-bg-light: #f7fbff;
+  --color-text: #364b59;
+  --color-border: #d0e0ed;
+  --color-success: #4caf50;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}
+
+/* Contenedor principal */
+.checkout-form {
+  max-width: 100%;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  color: var(--color-text);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+/* Título del formulario */
+.swal2-title {
+  color: var(--color-primary);
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Grupos de formulario */
 .checkout-form .form-group {
-    margin-bottom: 15px;
-    text-align: left;
+  margin-bottom: 1.25rem;
+  text-align: left;
+  position: relative;
+  transition: var(--transition);
 }
 
+/* Efectos en hover para los grupos */
+.checkout-form .form-group:hover {
+  transform: translateY(-2px);
+}
+
+/* Etiquetas */
 .checkout-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  transition: var(--transition);
+  font-size: 0.95rem;
 }
 
-.checkout-form .swal2-input,
+/* Campos de entrada */
+.checkout-form .swal2-input, 
 .checkout-form .swal2-textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  background-color: var(--color-bg-light);
+  color: var(--color-text);
 }
 
+/* Efecto de foco para campos */
+.checkout-form .swal2-input:focus, 
+.checkout-form .swal2-textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(58, 93, 122, 0.2);
+  outline: none;
+}
+
+/* Campos con error */
+.checkout-form .swal2-input.error {
+  border-color: #ff3860;
+  background-color: #fff5f7;
+}
+
+/* Placeholder personalizado */
+.checkout-form .swal2-input::placeholder {
+  color: #adbdcc;
+  opacity: 0.7;
+}
+
+/* Opciones de pago */
 .checkout-form .payment-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 5px 0;
 }
 
+/* Contenedor para cada opción de pago */
 .checkout-form .payment-options label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: normal;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--color-border);
+  background-color: var(--color-bg-light);
+  cursor: pointer;
+  transition: var(--transition);
+  gap: 10px;
+  font-weight: normal;
 }
 
+/* Efecto hover para opciones de pago */
+.checkout-form .payment-options label:hover {
+  background-color: rgba(77, 115, 148, 0.1);
+  border-color: var(--color-primary-light);
+}
+
+/* Estilo para opciones de pago seleccionadas */
+.checkout-form .payment-options input[type="radio"]:checked + label,
+.checkout-form .payment-options label:has(input[type="radio"]:checked) {
+  background-color: rgba(77, 115, 148, 0.15);
+  border-color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Personalización de radio buttons */
+.checkout-form .payment-options input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  outline: none;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+  background-color: white;
+}
+
+.checkout-form .payment-options input[type="radio"]:checked {
+  border-color: var(--color-primary);
+}
+
+.checkout-form .payment-options input[type="radio"]:checked::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Estilo para la opción de registro */
+.checkout-form .registro-option {
+  margin-top: 1rem;
+  padding: 10px 15px;
+  background-color: rgba(255, 127, 80, 0.1);
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--color-accent);
+}
+
+.checkout-form .registro-option label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin: 0;
+  font-weight: normal;
+  color: var(--color-text);
+}
+
+/* Personalización del checkbox */
+.checkout-form input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  background-color: white;
+}
+
+.checkout-form input[type="checkbox"]:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.checkout-form input[type="checkbox"]:checked::before {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Botones */
+.swal2-actions {
+  margin-top: 1.5rem;
+  gap: 12px;
+}
+
+.swal2-confirm {
+  background-color: var(--color-primary) !important;
+  padding: 10px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: var(--border-radius) !important;
+  transition: var(--transition) !important;
+}
+
+.swal2-confirm:hover {
+  background-color: var(--color-primary-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(58, 93, 122, 0.3) !important;
+}
+
+.swal2-cancel {
+  background-color: #f8f9fa !important;
+  color: var(--color-text) !important;
+  border: 2px solid #e9ecef !important;
+  padding: 10px 24px !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: var(--border-radius) !important;
+  transition: var(--transition) !important;
+}
+
+.swal2-cancel:hover {
+  background-color: #e9ecef !important;
+}
+
+/* Estilos específicos para móviles */
+@media screen and (max-width: 576px) {
+  .checkout-form {
+    padding: 15px 10px;
+  }
+  
+  .swal2-title {
+    font-size: 1.5rem;
+  }
+  
+  .checkout-form .swal2-input, 
+  .checkout-form .swal2-textarea {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .checkout-form label {
+    font-size: 0.9rem;
+  }
+  
+  .swal2-confirm,
+  .swal2-cancel {
+    padding: 9px 18px !important;
+    font-size: 0.95rem !important;
+  }
+  
+  .checkout-form .payment-options label {
+    padding: 8px 12px;
+  }
+  
+  /* Diseño de formulario más compacto */
+  .checkout-form .form-group {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Estilos para pantallas medianas */
+@media screen and (min-width: 577px) and (max-width: 992px) {
+  .checkout-form {
+    padding: 20px 15px;
+  }
+  
+  /* Diseño de dos columnas para pantallas medianas */
+  .checkout-form .form-row {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .checkout-form .form-row .form-group {
+    flex: 1;
+  }
+}
+
+/* Estilos para pantallas grandes */
+@media screen and (min-width: 993px) {
+  .checkout-form {
+    padding: 25px;
+  }
+  
+  /* Diseño de dos columnas para pantallas grandes */
+  .checkout-form .form-row {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .checkout-form .form-row .form-group {
+    flex: 1;
+  }
+  
+  /* Animación suave para campos de entrada */
+  .checkout-form .swal2-input, 
+  .checkout-form .swal2-textarea {
+    transition: transform 0.2s ease, border 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .checkout-form .swal2-input:focus,
+  .checkout-form .swal2-textarea:focus {
+    transform: scale(1.01);
+  }
+}
+
+/* Efectos de validación */
+.checkout-form .swal2-input:valid {
+  border-color: var(--color-success);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234caf50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+/* Animación de carga */
+.swal2-loading {
+  border-top-color: var(--color-primary) !important;
+}
+
+/* Iconos para campos */
+.checkout-form .form-group.icon-email:before {
+  content: '✉️';
+  position: absolute;
+  left: 12px;
+  top: 43px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.checkout-form .form-group.icon-person:before {
+  content: '👤';
+  position: absolute;
+  left: 12px;
+  top: 43px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.checkout-form .form-group.icon-phone:before {
+  content: '📞';
+  position: absolute;
+  left: 12px;
+  top: 43px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.checkout-form .form-group.icon-address:before {
+  content: '🏠';
+  position: absolute;
+  left: 12px;
+  top: 43px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.checkout-form .form-group.icon-city:before {
+  content: '🏙️';
+  position: absolute;
+  left: 12px;
+  top: 43px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+/* Para campos con iconos, añadir padding-left */
+.checkout-form .form-group.with-icon .swal2-input {
+  padding-left: 38px;
+}
+
+/* Efecto de agua para tema de pescado */
+.checkout-form:before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(77, 115, 148, 0.3) 20%,
+    rgba(77, 115, 148, 0.3) 80%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  z-index: -1;
+  animation: water-wave 3s infinite linear;
+}
+
+@keyframes water-wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Mensaje de confirmación animado */
+.swal2-success-circular-line-left,
+.swal2-success-circular-line-right,
+.swal2-success-fix {
+  background-color: transparent !important;
+}
+
+.swal2-success-ring {
+  border-color: rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Animación de entrada suave */
+.checkout-animation-enter {
+  animation: formFadeIn 0.4s ease-out;
+}
+
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* aca terminan los estilos del checkout */
 /* Responsive */
 @media (max-width: 768px) {
     .cart-container {

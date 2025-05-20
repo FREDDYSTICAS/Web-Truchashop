@@ -26,7 +26,7 @@ class PDFGeneratorService {
     };
     
     // Ruta al logo (asegúrate de que esta ruta sea correcta en tu proyecto)
-    this.logoPath = path.join(__dirname, '../public/img/logo.png');
+    this.logoPath = path.join(__dirname, '../public/img/png-trucha arcoiris.png');
   }
 
   /**
